@@ -12,7 +12,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use ApiPlatform\Core\Annotation\ApiResource;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ApiResource()]
+#[ApiResource(collectionOperations: ["GET"=>["security"=>"is_granted('ROLE_USER')"]])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
