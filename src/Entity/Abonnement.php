@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
 
 #[ORM\Entity(repositoryClass: AbonnementRepository::class)]
-#[ApiResource()]
+#[ApiResource(collectionOperations: ["get"=>["security"=> "is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')"], "post"=>["security"=> "is_granted('ROLE_ADMIN')"]], itemOperations: ["get"=>["security"=> "is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')"], "patch"=>["security"=> "is_granted('ROLE_ADMIN')"], "delete"=>["security"=> "is_granted('ROLE_ADMIN')"]])]
 class Abonnement
 {
     #[ORM\Id]

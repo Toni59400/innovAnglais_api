@@ -10,50 +10,62 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ApiResource(collectionOperations: ["GET"=>["security"=>"is_granted('ROLE_USER')"]])]
+#[ApiResource(normalizationContext:['groups' => ['read']], collectionOperations: ["get"=>["security"=> "is_granted('ROLE_ADMIN')"], "post"=>["security"=> "is_granted('ROLE_ADMIN')"]], itemOperations: ["get"=>["security"=> "is_granted('ROLE_ADMIN') or object == user"], "patch"=>["security"=> "is_granted('ROLE_ADMIN') or object == user"], "delete"=>["security"=> "is_granted('ROLE_ADMIN')"]])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["read"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Groups(["read"])]
     private ?string $nom = null;
 
     #[ORM\Column]
+    #[Groups(["read"])]
     private array $roles = [];
 
     /**
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Groups(["read"])]
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["read"])]
     private ?string $prenom = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["read"])]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
     private ?string $telephone = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["read"])]
     private ?string $adresse = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["read"])]
     private ?string $ville = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(["read"])]
     private ?\DateTimeInterface $dateSouscription = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(["read"])]
     private ?\DateTimeInterface $dateDernierPaiement = null;
 
     #[ORM\ManyToMany(targetEntity: Abonnement::class, mappedBy: 'Utilisateur')]
+    #[Groups(["read"])]
     private Collection $abonnements;
 
     #[ORM\OneToMany(mappedBy: 'Utilisateur', targetEntity: FaireTest::class)]
@@ -94,7 +106,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->nom;
+        return (string) $this->email;
     }
 
     /**
@@ -102,7 +114,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUsername(): string
     {
-        return (string) $this->nom;
+        return (string) $this->email;
     }
 
     /**
